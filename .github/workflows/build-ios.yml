@@ -18,7 +18,7 @@ jobs:
       - name: Build and archive
         run: |
           xcodebuild archive \
-            -project Pomodoro.xcodeproj \
+            -project PomodoroTimer.xcodeproj \
             -scheme PomodoroTimer \
             -configuration Release \
             -archivePath build/archive.xcarchive \
