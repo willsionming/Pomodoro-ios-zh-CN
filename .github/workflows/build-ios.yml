@@ -1,11 +1,11 @@
 name: Build iOS IPA
 on:
   push:
-    branches: [ main ] # 只有推送到main分支才触发打包，不要改
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: macos-latest # 使用mac虚拟机编译iOS项目，固定不要改
+    runs-on: macos-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,12 +15,6 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Install dependencies (CocoaPods)
-        run: |
-          gem install cocoapods
-          pod install
-        working-directory: ./ # 如果你的pod不在根目录，这里改路径
-
       - name: Build and archive
         run: |
           xcodebuild archive \
@@ -29,8 +23,6 @@ jobs:
             -configuration Release \
             -archivePath build/archive.xcarchive \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
-        # 上面这一行 CODE_SIGNING_ALLOWED=NO 意思：不签名打包！
-        # 打包出来的IPA是未签名版本，不能直接装手机，适合你看汉化效果、源码编译测试
 
       - name: Export IPA
         run: |
@@ -38,7 +30,6 @@ jobs:
             -archivePath build/archive.xcarchive \
             -exportOptionsPlist export.plist \
             -exportPath build/
-        # 下面我们还要新建一个 export.plist 文件，放在仓库根目录
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
