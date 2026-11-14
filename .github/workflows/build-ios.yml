@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build iOS Archive
 on:
   push:
     branches: [ main ]
@@ -18,7 +18,7 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Build and archive
+      - name: Build and archive（不签名）
         run: |
           xcodebuild archive \
             -project PomodoroTimer.xcodeproj \
@@ -27,15 +27,8 @@ jobs:
             -archivePath build/archive.xcarchive \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
 
-      - name: Export IPA
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath build/archive.xcarchive \
-            -exportOptionsPlist export.plist \
-            -exportPath build/
-
-      - name: Upload IPA artifact
+      - name: 上传 xcarchive 包
         uses: actions/upload-artifact@v4
         with:
-          name: iOS-IPA
-          path: build/*.ipa
+          name: archive-package
+          path: build/archive.xcarchive
